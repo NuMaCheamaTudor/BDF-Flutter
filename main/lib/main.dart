@@ -3,6 +3,11 @@ import 'package:main/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'notification_service.dart';
 import 'theme/theme.dart';
+import 'onboarding.dart';
+
+import 'home_screen.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +27,7 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: ConcentricAnimationOnboarding(),
     );
   }
 }

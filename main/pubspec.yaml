@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.2
-
+  concentric_transition: ^1.0.3
 
   # 🔔 Plugin pentru notificări locale
   flutter_local_notifications: ^19.2.0
