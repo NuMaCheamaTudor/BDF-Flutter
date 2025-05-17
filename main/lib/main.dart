@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:main/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'notification_service.dart';
+import 'theme/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,9 +18,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Reminder Pastile',
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: HomeScreen(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
     );
   }
 }
@@ -55,7 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Reminder setat: $_zile zile, la $_intervalOre ore, începând de la ${_oraStart.format(context)}')),
+      SnackBar(
+        content: Text(
+          'Reminder setat: $_zile zile, la $_intervalOre ore, de la ${_oraStart.format(context)}',
+        ),
+      ),
     );
   }
 
@@ -77,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
               label: "$_zile zile",
               onChanged: (val) => setState(() => _zile = val.toInt()),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Text("La câte ore să vină notificările?", style: TextStyle(fontSize: 18)),
             Slider(
               value: _intervalOre.toDouble(),
@@ -87,19 +95,19 @@ class _HomeScreenState extends State<HomeScreen> {
               label: "$_intervalOre ore",
               onChanged: (val) => setState(() => _intervalOre = val.toInt()),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Text("Ora de început: ${_oraStart.format(context)}", style: TextStyle(fontSize: 18)),
             TextButton(
               onPressed: () => _alegeOraStart(context),
               child: const Text("Schimbă ora de start"),
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: _startReminder,
-              child: const Text("Start tratament 💊"),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
+              child: const Text("Start tratament 💊"),
             ),
           ],
         ),

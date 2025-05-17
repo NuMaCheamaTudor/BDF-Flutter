@@ -95,7 +95,7 @@ class NotificationService {
       await _notificationsPlugin.zonedSchedule(
         id++,
         'Reminder pastile',
-        'Pastila nr. ${id - 100} 💊',
+        'Este timpul să-ți iei pastila nr. ${id - 100} 💊',
         time,
         _notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
