@@ -66,6 +66,11 @@ class _DailyChallengeState extends State<DailyChallenge> {
               style: TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
+            Text(
+              "Take a picture to feel prod!",
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 30),
             ElevatedButton.icon(
               onPressed: _openCamera,
