@@ -31,8 +31,13 @@ class _SplashScreenState extends State<SplashScreen> {
     final seenOnboarding = prefs.getBool('seenOnboarding') ?? false;
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => seenOnboarding ? MainScreen() : OnboardingScreen(),
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (_, __, ___) =>
+            seenOnboarding ? MainScreen() : OnboardingScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
       ),
     );
   }
@@ -144,7 +149,7 @@ class ErrorInfo extends StatelessWidget {
   }
 }
 
-// SVG ilustrativ (poți înlocui cu orice vrei tu sau pune direct în assets)
+// SVG ilustrativ
 const paymentProcessIllistration = '''
 <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M12 2L2 7h20L12 2z" fill="#E5E5E5"/>

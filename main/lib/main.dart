@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'reminder_page.dart'; // ReminderPage() e HomeScreen
+import 'reminder_page.dart';
 import 'get_help.dart';
 import 'dailychallenge.dart';
 import 'ultimate_social_habit_screen (1).dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Reminder Pastile',
-      home: SplashScreen(), // pornim cu splash
+      home: SplashScreen(),
     );
   }
 }
@@ -27,46 +27,49 @@ class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      backgroundColor: const Color(0xfff5f5f5),
+      appBar: AppBar(
+        title: const Text('Your Dashboard'),
+        elevation: 0,
+        backgroundColor: Colors.deepPurple,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1,
+        padding: const EdgeInsets.all(20.0),
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            childAspectRatio: 1,
+          ),
           children: [
-            _buildButtonCard(
+            _buildDashboardTile(
               context,
               icon: Icons.timer_outlined,
-              label: 'Set a timer!',
-              onPressed: () {
-                Navigator.push(context, _createRoute(ReminderPage()));
-              },
+              label: 'Set a timer',
+              color: Colors.deepPurple,
+              onTap: () => Navigator.push(context, _createRoute(ReminderPage())),
             ),
-            _buildButtonCard(
+            _buildDashboardTile(
               context,
               icon: Icons.auto_awesome,
               label: 'Change Your Life',
-              onPressed: () {
-                Navigator.push(context, _createRoute(ReminderPage()));
-              },
+              color: Colors.orange,
+              onTap: () => Navigator.push(context, _createRoute(ReminderPage())),
             ),
-            _buildButtonCard(
+            _buildDashboardTile(
               context,
               icon: Icons.flash_on,
               label: 'Daily Challenge',
-              onPressed: () {
-                Navigator.push(context, _createRoute(DailyChallenge()));
-              },
+              color: Colors.pinkAccent,
+              onTap: () => Navigator.push(context, _createRoute(DailyChallenge())),
             ),
-            _buildButtonCard(
+            _buildDashboardTile(
               context,
               icon: Icons.group,
               label: 'Get Help',
-              onPressed: () {
-                Navigator.push(context, _createRoute(UltimateSocialHabitScreen()));
-              },
+              color: Colors.teal,
+              onTap: () => Navigator.push(context, _createRoute(UltimateSocialHabitScreen())),
             ),
           ],
         ),
@@ -74,48 +77,45 @@ class StartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildButtonCard(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-  }) {
+  Widget _buildDashboardTile(BuildContext context,
+      {required IconData icon,
+      required String label,
+      required Color color,
+      required VoidCallback onTap}) {
     return Material(
-      color: Colors.transparent,
+      color: color.withOpacity(0.1),
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
-        onTap: onPressed,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-        splashColor: Theme.of(context).primaryColor.withOpacity(0.2),
-        highlightColor: Colors.transparent,
-        child: Ink(
+        child: Container(
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6,
-                offset: Offset(0, 2),
+                color: color.withOpacity(0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 48, color: color),
+              const SizedBox(height: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+                textAlign: TextAlign.center,
               )
             ],
-          ),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 48, color: Theme.of(context).primaryColor),
-                const SizedBox(height: 12),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
           ),
         ),
       ),
@@ -128,10 +128,8 @@ class StartPage extends StatelessWidget {
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 0.1);
         const end = Offset.zero;
-        final tween = Tween(begin: begin, end: end)
-            .chain(CurveTween(curve: Curves.easeInOut));
-        final fade = Tween<double>(begin: 0.0, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeIn));
+        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.easeInOut));
+        final fade = Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeIn));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -141,7 +139,7 @@ class StartPage extends StatelessWidget {
           ),
         );
       },
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const Duration(milliseconds: 500),
     );
   }
 }
