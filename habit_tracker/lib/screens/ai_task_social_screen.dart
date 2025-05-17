@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AiTaskSocialScreen extends StatefulWidget {
+class AiTaskClaudeScreen extends StatefulWidget {
   @override
-  _AiTaskSocialScreenState createState() => _AiTaskSocialScreenState();
+  _AiTaskClaudeScreenState createState() => _AiTaskClaudeScreenState();
 }
 
-class _AiTaskSocialScreenState extends State<AiTaskSocialScreen> {
+class _AiTaskClaudeScreenState extends State<AiTaskClaudeScreen> {
   final TextEditingController _controller = TextEditingController();
   List<String> _tasks = [];
   Map<String, bool> _checked = {};
@@ -21,52 +21,69 @@ class _AiTaskSocialScreenState extends State<AiTaskSocialScreen> {
     {'name': 'Elena', 'xp': 1},
   ];
 
-  Future<void> fetchTasksFromRapidAPI(String problemText) async {
+  Future<void> fetchTasksFromClaude(String problemText) async {
     setState(() {
       _loading = true;
       _tasks = [];
       _checked = {};
     });
 
-    final apiKey = '';
-    final url = Uri.parse('https://chatgpt-42.p.rapidapi.com/conversationgpt4');
+    try {
+      final apiKey = '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';
+      final url = Uri.parse('https://api.anthropic.com/v1/messages');
 
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-RapidAPI-Key': apiKey,
-        'X-RapidAPI-Host': 'chatgpt-42.p.rapidapi.com',
-      },
-      body: jsonEncode({
-        "messages": [
-          {
-            "role": "user",
-            "content":
-                "Am această problemă: '$problemText'. Dă-mi 5 obiceiuri utile zilnice, fiecare pe linie separată, fără explicații."
-          }
-        ]
-      }),
-    );
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
+          'Anthropic-Version': '2023-06-01',
+        },
+        body: jsonEncode({
+          "model": "claude-3-sonnet-20240229",
+          "max_tokens": 512,
+          "temperature": 0.7,
+          "messages": [
+            {
+              "role": "user",
+              "content":
+                  "Am această problemă: '$problemText'. Dă-mi 5 obiceiuri utile zilnice, fiecare pe linie separată, fără explicații."
+            }
+          ]
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final content = data['result'] ?? "";
-      final lines = content
-          .split('\n')
-          .map((line) => line.trim())
-          .where((line) => line.isNotEmpty)
-          .map((line) => line.replaceAll(RegExp(r'^\d+\.?\s*'), ''))
-          .toList();
+      print("RESPONSE STATUS: \ ${response.statusCode}");
+      print("RESPONSE BODY: \ ${response.body}");
 
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final content = (data['content'] is List && data['content'][0]['text'] != null)
+            ? data['content'][0]['text']
+            : 'Taskurile nu au putut fi extrase.';
+        final lines = content
+            .split('\n')
+            .map((line) => line.trim())
+            .where((line) => line.isNotEmpty)
+            .map((line) => line.replaceAll(RegExp(r'^\d+\.\s*'), ''))
+            .toList();
+
+        setState(() {
+          _tasks = lines;
+          _checked = {for (var task in lines) task: false};
+          _loading = false;
+        });
+      } else {
+        setState(() {
+          _tasks = ['Eroare: \ ${response.statusCode}'];
+          _loading = false;
+        });
+      }
+    } catch (e, stacktrace) {
+      print("EROARE CATCH: \ $e");
+      print(stacktrace);
       setState(() {
-        _tasks = lines;
-        _checked = {for (var task in lines) task: false};
-        _loading = false;
-      });
-    } else {
-      setState(() {
-        _tasks = ['Eroare: ${response.statusCode}'];
+        _tasks = ['A apărut o eroare neașteptată.'];
         _loading = false;
       });
     }
@@ -85,7 +102,7 @@ class _AiTaskSocialScreenState extends State<AiTaskSocialScreen> {
       ..sort((a, b) => b['xp'].compareTo(a['xp']));
 
     return Scaffold(
-      appBar: AppBar(title: Text('Habit AI + Clasament')),
+      appBar: AppBar(title: Text('Claude Habit AI + Clasament')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -101,8 +118,8 @@ class _AiTaskSocialScreenState extends State<AiTaskSocialScreen> {
             ElevatedButton(
               onPressed: _loading
                   ? null
-                  : () => fetchTasksFromRapidAPI(_controller.text.trim()),
-              child: Text("Generează obiceiuri cu AI"),
+                  : () => fetchTasksFromClaude(_controller.text.trim()),
+              child: Text("Generează obiceiuri cu Claude"),
             ),
             SizedBox(height: 20),
             if (_loading) CircularProgressIndicator(),
@@ -131,9 +148,9 @@ class _AiTaskSocialScreenState extends State<AiTaskSocialScreen> {
                 itemBuilder: (ctx, i) {
                   final user = sortedFriends[i];
                   return ListTile(
-                    leading: Text("#${i + 1}"),
+                    leading: Text("#\ ${i + 1}"),
                     title: Text(user['name']),
-                    trailing: Text("${user['xp']} XP"),
+                    trailing: Text("\ ${user['xp']} XP"),
                   );
                 },
               ),

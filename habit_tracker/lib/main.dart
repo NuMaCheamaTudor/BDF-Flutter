@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-     home:AiTaskSocialScreen(),
+     home:AiTaskClaudeScreen(),
     );
   }
 }
