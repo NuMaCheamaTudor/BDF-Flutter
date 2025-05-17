@@ -18,12 +18,15 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
-  void scheduleReminder() {
-    NotificationService.showScheduledNotification(
-      hoursFromNow: 1,
-      title: '💊 Pastile!',
-      body: 'Este timpul să iei medicamentele!',
+  Future<void> pickTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
     );
+
+    if (picked != null) {
+      NotificationService.scheduleReminderAtTime(picked.hour, picked.minute);
+    }
   }
 
   @override
@@ -32,8 +35,8 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(title: Text('Reminder Pastile')),
       body: Center(
         child: ElevatedButton(
-          onPressed: scheduleReminder,
-          child: Text('Setează reminder în 1 oră'),
+          onPressed: () => pickTime(context),
+          child: Text("Setează ora pentru pastile"),
         ),
       ),
     );

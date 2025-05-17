@@ -1,4 +1,3 @@
-// lib/notification_service.dart
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -13,16 +12,26 @@ class NotificationService {
     tz.initializeTimeZones();
   }
 
-  static Future showScheduledNotification({
-    required int hoursFromNow,
-    required String title,
-    required String body,
-  }) async {
+  static Future scheduleReminderAtTime(int hour, int minute) async {
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
+
+    if (scheduled.isBefore(now)) {
+      scheduled = scheduled.add(Duration(days: 1));
+    }
+
     await _notifications.zonedSchedule(
       0,
-      title,
-      body,
-      tz.TZDateTime.now(tz.local).add(Duration(hours: hoursFromNow)),
+      '💊 Reminder pastile',
+      'Este timpul să iei pastilele!',
+      scheduled,
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'reminder_channel',
@@ -33,7 +42,8 @@ class NotificationService {
       ),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // zilnic
     );
   }
 }
