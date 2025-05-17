@@ -4,6 +4,7 @@ import 'reminder_page.dart'; // HomeScreen e aici
 import 'get_help.dart';
 import 'dailychallenge.dart';
 import 'onboarding_screen.dart';
+import 'ultimate_social_habit_screen (1).dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +62,7 @@ class StartPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => GetHelp()),
+                  MaterialPageRoute(builder: (context) => UltimateSocialHabitScreen()),
                 );
               },
             ),

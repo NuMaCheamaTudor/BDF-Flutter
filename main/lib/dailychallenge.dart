@@ -79,7 +79,7 @@ class _DailyChallengeState extends State<DailyChallenge> {
 
   String _getTodayKey() {
     final now = DateTime.now();
-    return 'challenge_${now.year}-${now.month}-${now.day+1}';
+    return 'challenge_${now.year}-${now.month}-${now.day+2}';
   }
 
   Future<void> _initCamera() async {
