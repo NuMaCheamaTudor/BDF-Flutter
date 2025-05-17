@@ -9,8 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # 🔔 Plugin pentru notificări locale
   flutter_local_notifications: ^19.2.0
+
+  # 🕒 Timezone pentru notificări programate
   timezone: ^0.10.1
+
+  # 🔐 Permisiuni runtime (Android 13+)
+  permission_handler: ^11.0.0
 
 dev_dependencies:
   flutter_test:
@@ -19,6 +26,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-
-  
