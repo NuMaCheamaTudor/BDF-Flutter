@@ -31,12 +31,24 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyButtonScreen(),
+    );
+  }
+}
+
+
+class MyButtonScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Reminder Pastile')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => pickTime(context),
-          child: Text("Setează ora pentru pastile"),
+          onPressed: () {
+            print('Buton apăsat!');
+          },
+          child: Text('Setează reminder'),
         ),
       ),
     );
