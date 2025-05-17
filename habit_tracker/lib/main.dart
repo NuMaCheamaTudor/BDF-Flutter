@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/select_condition.dart';
 import 'screens/how_you_feel.dart';
+import 'screens/leaderboard_screen.dart';
+import 'screens/combined_habit_social_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-     home: HowYouFeelScreen(),
+     home:CombinedHabitSocialScreen(),
     );
   }
 }

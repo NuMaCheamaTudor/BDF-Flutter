@@ -1,110 +1,110 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-class HowYouFeelScreen extends StatefulWidget {
+class AiChecklistScreen extends StatefulWidget {
   @override
-  _HowYouFeelScreenState createState() => _HowYouFeelScreenState();
+  _AiChecklistScreenState createState() => _AiChecklistScreenState();
 }
 
-class _HowYouFeelScreenState extends State<HowYouFeelScreen> {
+class _AiChecklistScreenState extends State<AiChecklistScreen> {
   final TextEditingController _controller = TextEditingController();
-  bool isLoading = false;
-  List<String> generatedTasks = [];
+  List<String> _tasks = [];
+  Map<String, bool> _checked = {};
+  bool _loading = false;
 
-  Future<void> fetchGPTTasks(String userInput) async {
+  Future<void> fetchChecklistFromOpenAI(String input) async {
     setState(() {
-      isLoading = true;
-      generatedTasks = [];
+      _loading = true;
+      _tasks = [];
+      _checked = {};
     });
 
-    const apiKey = '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';
-    const endpoint = 'https://api.openai.com/v1/chat/completions';
+    final apiKey = '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';
+    final url = Uri.parse('https://api.openai.com/v1/chat/completions');
 
-    final prompt = """Sunt un asistent care creează obiceiuri zilnice pentru sănătatea mintală.
-Utilizatorul a spus: "$userInput"
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $apiKey',
+    };
 
-Răspunde cu o listă de 4-6 obiceiuri zilnice simple care pot ajuta.
-Fiecare pe o linie nouă, fără alte explicații.
-""";
+    final body = jsonEncode({
+      "model": "gpt-4o",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Am această problemă: '$input'. Te rog oferă-mi o listă de 5 obiceiuri zilnice care m-ar ajuta. Scrie-le fiecare pe o linie, fără explicații."
+        }
+      ],
+      "max_tokens": 150,
+      "temperature": 0.7
+    });
 
-    final response = await http.post(
-      Uri.parse(endpoint),
-      headers: {
-        'Authorization': 'Bearer $apiKey',
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        "model": "gpt-3.5-turbo",
-        "messages": [
-          {"role": "user", "content": prompt}
-        ],
-        "max_tokens": 150,
-        "temperature": 0.7,
-      }),
-    );
+    final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final content = data['choices'][0]['message']['content'] as String;
+      final data = jsonDecode(response.body);
+      final content = data['choices'][0]['message']['content'];
+      final lines = content
+          .split('')
+          .map((line) => line.trim())
+          .where((line) => line.isNotEmpty)
+          .map((line) => line.replaceAll(RegExp(r'^\d+\.?\s*'), ''))
+          .toList();
 
       setState(() {
-        generatedTasks = content
-            .split('\n')
-            .where((line) => line.trim().isNotEmpty)
-            .map((line) => line.replaceAll(RegExp(r'^\d+\.?\s*'), '').trim())
-            .toList();
+        _tasks = lines;
+        _checked = {for (var task in lines) task: false};
+        _loading = false;
       });
     } else {
-      print('Eroare GPT: ${response.body}');
       setState(() {
-        generatedTasks = ['A apărut o eroare. Încearcă din nou.'];
+        _loading = false;
+        _tasks = ['Eroare: ${response.statusCode}'];
       });
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Cum te simți azi?")),
+      appBar: AppBar(title: Text('Obiceiuri AI după problemă')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _controller,
-              maxLines: 4,
               decoration: InputDecoration(
-                hintText: "Descrie în câteva cuvinte cum te simți...",
+                labelText: 'Ce problemă ai?',
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 12),
             ElevatedButton(
-              onPressed: isLoading
+              onPressed: _loading
                   ? null
-                  : () => fetchGPTTasks(_controller.text.trim()),
+                  : () => fetchChecklistFromOpenAI(_controller.text.trim()),
               child: Text("Generează obiceiuri"),
             ),
-            SizedBox(height: 24),
-            if (isLoading) CircularProgressIndicator(),
-            if (!isLoading && generatedTasks.isNotEmpty)
+            SizedBox(height: 20),
+            if (_loading) CircularProgressIndicator(),
+            if (!_loading && _tasks.isNotEmpty)
               Expanded(
-                child: ListView.builder(
-                  itemCount: generatedTasks.length,
-                  itemBuilder: (ctx, i) {
+                child: ListView(
+                  children: _tasks.map((task) {
                     return CheckboxListTile(
-                      title: Text(generatedTasks[i]),
-                      value: false,
-                      onChanged: (_) {},
+                      title: Text(task),
+                      value: _checked[task] ?? false,
+                      onChanged: (value) {
+                        setState(() {
+                          _checked[task] = value ?? false;
+                        });
+                      },
                     );
-                  },
+                  }).toList(),
                 ),
-              )
+              ),
           ],
         ),
       ),
