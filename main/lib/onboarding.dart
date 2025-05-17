@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:main/main.dart';
 import 'package:main/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'notification_service.dart';
@@ -74,7 +75,7 @@ class ConcentricAnimationOnboarding extends StatelessWidget {
         scaleFactor: 2,
         onFinish: () {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => HomeScreen()),
+            MaterialPageRoute(builder: (_) => StartPage()),
           );
         },
         itemBuilder: (index) {

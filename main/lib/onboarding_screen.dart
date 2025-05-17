@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
-import '../main.dart'; // asigură-te că HomeScreen este acolo
+import 'package:main/main.dart';
+import 'onboarding.dart';
 
 class OnboardingScreen extends StatelessWidget {
   @override
@@ -25,7 +26,7 @@ class OnboardingScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => HomeScreen()),
+                    MaterialPageRoute(builder: (_) => ConcentricAnimationOnboarding()),
                   );
                 },
                 child: const Text("Să începem 💊"),

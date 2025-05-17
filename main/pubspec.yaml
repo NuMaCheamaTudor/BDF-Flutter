@@ -11,6 +11,10 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.2.2
   concentric_transition: ^1.0.3
+  camera: ^0.10.5+2
+  path_provider: ^2.1.2
+  permission_handler: ^11.3.0
+  http: ^1.4.0
 
   # 🔔 Plugin pentru notificări locale
   flutter_local_notifications: ^19.2.0
@@ -18,8 +22,6 @@ dependencies:
   # 🕒 Timezone pentru notificări programate
   timezone: ^0.10.1
 
-  # 🔐 Permisiuni runtime (Android 13+)
-  permission_handler: ^11.0.0
 
 dev_dependencies:
   flutter_test:
