@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'notification_service.dart';
 import 'reminder_page.dart'; // HomeScreen e aici
+import 'get_help.dart';
+import 'dailychallenge.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,7 +51,7 @@ class StartPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ReminderPage()),
+                  MaterialPageRoute(builder: (context) => DailyChallenge()),
                 );
               },
             ),
@@ -58,7 +60,7 @@ class StartPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ReminderPage()),
+                  MaterialPageRoute(builder: (context) => GetHelp()),
                 );
               },
             ),
