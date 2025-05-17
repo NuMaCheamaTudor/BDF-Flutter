@@ -20,7 +20,7 @@ class _AiChecklistScreenState extends State<AiChecklistScreen> {
       _checked = {};
     });
 
-    final apiKey = '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';
+    final apiKey = '';
     final url = Uri.parse('https://api.openai.com/v1/chat/completions');
 
     final headers = {
