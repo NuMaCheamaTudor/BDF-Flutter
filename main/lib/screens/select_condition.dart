@@ -18,7 +18,7 @@ class SelectConditionScreen extends StatelessWidget {
         itemBuilder: (ctx, i) {
           final c = conditions[i];
           return ListTile(
-            title: Text('${c.emoji} ${c.name}'),
+            title: Text('\${c.emoji} \${c.name}'),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
