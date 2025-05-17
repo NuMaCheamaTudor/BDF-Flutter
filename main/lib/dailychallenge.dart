@@ -6,41 +6,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'camera_screen.dart';
 import 'package:http/http.dart' as http;
 
-Future<List<String>> fetchChallengeFromOpenAI() async {
-  final apiKey = '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';
-  final url = Uri.parse('https://api.openai.com/v1/chat/completions');
+Future<List<String>> fetchChallengeFromClaudeAPI() async {
+  final url = Uri.parse('http://192.168.1.100:5001/ask');
 
-  final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $apiKey',
-  };
-
-  final body = jsonEncode({
-    "model": "gpt-4o-mini",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Give me a list of 5 daily motivational challenges as short sentences."
-      }
-    ],
-    "max_tokens": 150,
-    "temperature": 0.7
-  });
-
-  final response = await http.post(url, headers: headers, body: body);
+  final response = await http.get(url);
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
-    final content = data['choices'][0]['message']['content'];
+    final content = data['response'] as String;
 
     final lines = content.split('\n')
-      .map((line) => line.trim())
-      .where((line) => line.isNotEmpty)
-      .toList();
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty)
+        .toList();
 
     return lines;
   } else {
-    throw Exception('Failed to fetch challenges from OpenAI: ${response.statusCode}');
+    throw Exception('Failed to fetch challenges from Claude API: ${response.statusCode}');
   }
 }
 
@@ -73,9 +55,8 @@ class _DailyChallengeState extends State<DailyChallenge> {
       return;
     }
 
-    // Altfel, aducem lista de task-uri, alegem unul random și îl salvăm local
     try {
-      final challenges = await fetchChallengeFromOpenAI();
+      final challenges = await fetchChallengeFromClaudeAPI();
       final randomChallenge = challenges.isNotEmpty
           ? (challenges..shuffle()).first
           : "Fă o plimbare de 15 minute.";
@@ -151,9 +132,7 @@ class _DailyChallengeState extends State<DailyChallenge> {
             ),
             Text(
               "Take a picture and feel proud!",
-              style: TextStyle(
-                fontSize: 24,
-              ),
+              style: TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
