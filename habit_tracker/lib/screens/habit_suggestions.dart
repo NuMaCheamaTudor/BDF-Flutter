@@ -27,7 +27,7 @@ class _HabitSuggestionsScreenState extends State<HabitSuggestionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sugestii pentru \${widget.conditionName}')),
+      appBar: AppBar(title: Text('Sugestii pentru ${widget.conditionName}')),
       body: ListView.builder(
         itemCount: selectedHabits.length,
         itemBuilder: (ctx, i) {

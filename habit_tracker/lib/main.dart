@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/select_condition.dart';
+import 'screens/how_you_feel.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: SelectConditionScreen(),
+     home: HowYouFeelScreen(),
     );
   }
 }
