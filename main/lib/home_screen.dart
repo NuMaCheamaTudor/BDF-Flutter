@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'notification_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -36,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
       startMinute: _oraStart.minute,
     );
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Ridica-ti capul si moralul')),
+      const SnackBar(content: Text('Ridică-ți capul și moralul 💊')),
     );
   }
 
@@ -55,57 +54,130 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F8F8),
       appBar: AppBar(
         title: const Text('Bring me up'),
         centerTitle: true,
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
+        elevation: 2,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Ora de start: ${_oraStart.format(context)}', style: Theme.of(context).textTheme.titleMedium),
-            ElevatedButton(
-              onPressed: () => pickStartTime(context),
-              child: const Text('Selectează ora de start'),
+            _buildDashboardCard(
+              context,
+              icon: Icons.access_time,
+              title: 'Ora de start',
+              content: Text(
+                '🕒 ${_oraStart.format(context)}',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              action: ElevatedButton(
+                onPressed: () => pickStartTime(context),
+                child: const Text('Selectează ora'),
+              ),
             ),
             const SizedBox(height: 20),
-            Text('Durata tratamentului (zile): $_zile', style: Theme.of(context).textTheme.titleMedium),
-            Slider(
-              min: 1,
-              max: 14,
-              divisions: 13,
-              label: _zile.toString(),
-              value: _zile.toDouble(),
-              onChanged: (val) {
-                setState(() {
-                  _zile = val.toInt();
-                });
-              },
+            _buildDashboardCard(
+              context,
+              icon: Icons.calendar_today,
+              title: 'Durata tratamentului',
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('$_zile zile', style: const TextStyle(fontSize: 16)),
+                  Slider(
+                    min: 1,
+                    max: 14,
+                    divisions: 13,
+                    label: '$_zile',
+                    value: _zile.toDouble(),
+                    onChanged: (val) => setState(() => _zile = val.toInt()),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
-            Text('Interval între notificări: ${_intervalOre.toInt()} ore', style: Theme.of(context).textTheme.titleMedium),
-            Slider(
-              min: 1,
-              max: 24,
-              divisions: 23,
-              label: _intervalOre.toStringAsFixed(0),
-              value: _intervalOre,
-              onChanged: (val) {
-                setState(() {
-                  _intervalOre = val;
-                });
-              },
+            _buildDashboardCard(
+              context,
+              icon: Icons.alarm,
+              title: 'Interval notificări',
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${_intervalOre.toInt()} ore', style: const TextStyle(fontSize: 16)),
+                  Slider(
+                    min: 1,
+                    max: 24,
+                    divisions: 23,
+                    label: '${_intervalOre.toInt()}',
+                    value: _intervalOre,
+                    onChanged: (val) => setState(() => _intervalOre = val),
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
+            const SizedBox(height: 30),
             ElevatedButton.icon(
               icon: const Icon(Icons.notifications_active),
               label: const Text('Pornește reminder-ul'),
               onPressed: programareNotificari,
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+                minimumSize: const Size.fromHeight(55),
+                textStyle: const TextStyle(fontSize: 18),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
-            )
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required Widget content,
+    Widget? action,
+  }) {
+    return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 6,
+      shadowColor: Colors.black12,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 30, color: Colors.deepPurple),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            content,
+            if (action != null) ...[
+              const SizedBox(height: 16),
+              action,
+            ],
           ],
         ),
       ),
