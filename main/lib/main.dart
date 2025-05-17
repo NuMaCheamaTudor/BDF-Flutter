@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'notification_service.dart';
+import 'reminder_page.dart'; // HomeScreen e aici
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,36 +13,59 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Reminder Pastile',
-      home: HomeScreen(),
+      home: StartPage(), 
     );
   }
 }
-
-class HomeScreen extends StatelessWidget {
-  Future<void> pickTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-
-    if (picked != null) {
-      await NotificationService.scheduleReminderAtTime(picked.hour, picked.minute);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Reminder setat la ${picked.format(context)}')),
-      );
-    }
-  }
-
+class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Reminder Pastile')),
+      appBar: AppBar(title: const Text('Home')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => pickTime(context),
-          child: const Text('Setează reminder'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // Centrare verticală
+          children: [
+            ElevatedButton(
+              child: const Text('Set a timer!'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReminderPage()),
+                );
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Change Your Life'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReminderPage()),
+                );
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Daily Challenge'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReminderPage()),
+                );
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Get Help'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReminderPage()),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
