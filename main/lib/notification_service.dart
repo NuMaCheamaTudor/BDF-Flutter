@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
@@ -24,7 +25,7 @@ class NotificationService {
     );
 
     if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(Duration(days: 1));
+      scheduled = scheduled.add(const Duration(days: 1));
     }
 
     await _notifications.zonedSchedule(
@@ -40,9 +41,7 @@ class NotificationService {
           priority: Priority.high,
         ),
       ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,  // <--- asta trebuie adăugat
       matchDateTimeComponents: DateTimeComponents.time, // zilnic
     );
   }
