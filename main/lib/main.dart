@@ -25,18 +25,21 @@ class HomeScreen extends StatelessWidget {
     );
 
     if (picked != null) {
-      NotificationService.scheduleReminderAtTime(picked.hour, picked.minute);
+      await NotificationService.scheduleReminderAtTime(picked.hour, picked.minute);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Reminder setat la ${picked.format(context)}')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Reminder Pastile')),
+      appBar: AppBar(title: const Text('Reminder Pastile')),
       body: Center(
         child: ElevatedButton(
           onPressed: () => pickTime(context),
-          child: Text("Setează ora pentru pastile"),
+          child: const Text('Setează reminder'),
         ),
       ),
     );
