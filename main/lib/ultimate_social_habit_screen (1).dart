@@ -1,23 +1,24 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class UltimateSocialHabitScreen extends StatefulWidget {
   @override
-  _UltimateSocialHabitScreenState createState() => _UltimateSocialHabitScreenState();
+  _UltimateSocialHabitScreenState createState() =>
+      _UltimateSocialHabitScreenState();
 }
 
-class _UltimateSocialHabitScreenState extends State<UltimateSocialHabitScreen> {
+class _UltimateSocialHabitScreenState
+    extends State<UltimateSocialHabitScreen> {
   final TextEditingController _controller = TextEditingController();
   List<String> _tasks = [];
   Map<String, bool> _checked = {};
-  Map<String, List<String>> _reactions = {};
   bool _loading = false;
 
   String _username = "Tu";
   String _avatar = "🧠";
-  final String _dailyChallenge = "Scrie 3 lucruri pentru care ești recunoscător";
+  final String _dailyChallenge =
+      "Scrie 3 lucruri pentru care ești recunoscător";
 
   final List<Map<String, dynamic>> friends = [
     {'name': 'Tudor', 'xp': 3},
@@ -45,11 +46,10 @@ class _UltimateSocialHabitScreenState extends State<UltimateSocialHabitScreen> {
       _loading = true;
       _tasks = [];
       _checked = {};
-      _reactions = {};
     });
 
     try {
-      final url = Uri.parse("http://192.168.1.10:5000/generate_tasks"); // Schimbă cu IP-ul tău real
+      final url = Uri.parse("http://192.168.1.10:5000/generate_tasks");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -63,7 +63,6 @@ class _UltimateSocialHabitScreenState extends State<UltimateSocialHabitScreen> {
         setState(() {
           _tasks = [_dailyChallenge, ...lines];
           _checked = {for (var task in _tasks) task: false};
-          _reactions = {for (var task in _tasks) task: []};
           _loading = false;
         });
       } else {
@@ -80,44 +79,32 @@ class _UltimateSocialHabitScreenState extends State<UltimateSocialHabitScreen> {
     }
   }
 
-  void _toggleReaction(String task, String emoji) {
-    setState(() {
-      if (_reactions[task]!.contains(emoji)) {
-        _reactions[task]!.remove(emoji);
-      } else {
-        _reactions[task]!.add(emoji);
-      }
-    });
-  }
-
   Widget _buildTaskTile(String task) {
-    return Card(
-      child: Column(
-        children: [
-          CheckboxListTile(
-            title: Text(task),
-            value: _checked[task] ?? false,
-            onChanged: (val) {
-              setState(() {
-                _checked[task] = val ?? false;
-                _updateXP();
-              });
-            },
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: ['🔥', '💪', '😂'].map((emoji) {
-              final selected = _reactions[task]?.contains(emoji) ?? false;
-              return IconButton(
-                onPressed: () => _toggleReaction(task, emoji),
-                icon: Text(
-                  emoji,
-                  style: TextStyle(fontSize: 20, backgroundColor: selected ? Colors.yellowAccent : null),
-                ),
-              );
-            }).toList(),
-          ),
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            colors: [Colors.white, Colors.purple.shade50]),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.deepPurple.withOpacity(0.15),
+              blurRadius: 10,
+              offset: Offset(0, 4))
         ],
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(12),
+      child: CheckboxListTile(
+        title: Text(task, style: TextStyle(fontSize: 16)),
+        value: _checked[task] ?? false,
+        onChanged: (val) {
+          setState(() {
+            _checked[task] = val ?? false;
+            _updateXP();
+          });
+        },
       ),
     );
   }
@@ -125,7 +112,8 @@ class _UltimateSocialHabitScreenState extends State<UltimateSocialHabitScreen> {
   Widget _buildBadge(String title, IconData icon, bool earned) {
     return Column(
       children: [
-        Icon(icon, size: 40, color: earned ? Colors.amber : Colors.grey),
+        Icon(icon, size: 36, color: earned ? Colors.amber : Colors.grey[300]),
+        SizedBox(height: 4),
         Text(title, style: TextStyle(fontSize: 12)),
       ],
     );
@@ -134,77 +122,114 @@ class _UltimateSocialHabitScreenState extends State<UltimateSocialHabitScreen> {
   @override
   Widget build(BuildContext context) {
     final sortedFriends = [
-      {'name': _username, 'xp': _checked.values.where((v) => v).length + (_dailyChallengeCompleted ? 2 : 0)},
+      {
+        'name': _username,
+        'xp': _checked.values.where((v) => v).length +
+            (_dailyChallengeCompleted ? 2 : 0)
+      },
       ...friends
     ]..sort((a, b) => b['xp'].compareTo(a['xp']));
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('👥 Habit Universe'),
+        title: Text('🌌 Habit Universe'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         actions: [
           PopupMenuButton<String>(
-            onSelected: (value) {
-              setState(() {
-                _avatar = value;
-              });
-            },
+            onSelected: (value) => setState(() => _avatar = value),
             itemBuilder: (ctx) => ['🧠', '🐸', '🐱', '🧘', '🐺']
-                .map((e) => PopupMenuItem(value: e, child: Text("Avatar $e")))
+                .map((e) =>
+                    PopupMenuItem(value: e, child: Text("Avatar $e")))
                 .toList(),
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text("$_avatar", style: TextStyle(fontSize: 40)),
-                SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(labelText: "Ce problemă ai?", border: OutlineInputBorder()),
-                  ),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: _loading ? null : () => getTasksFromFlask(_controller.text),
-                  child: Text("Generează"),
-                )
-              ],
-            ),
-            SizedBox(height: 12),
-            if (_loading) CircularProgressIndicator(),
-            if (!_loading && _tasks.isNotEmpty)
-              Expanded(
-                child: ListView(
-                  children: _tasks.map(_buildTaskTile).toList(),
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xffe0c3fc), Color(0xff8ec5fc)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            Divider(),
-            Text("🏅 Badge-uri", style: TextStyle(fontWeight: FontWeight.bold)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(top: 100.0, left: 12.0, right: 12.0),
+            child: Column(
               children: [
-                _buildBadge("Focus x5", Icons.star, _checked.length >= 5),
-                _buildBadge("Challenge OK", Icons.check_circle, _dailyChallengeCompleted),
-                _buildBadge("AI Hacker", Icons.bolt, _controller.text.isNotEmpty),
+                Row(
+                  children: [
+                    Text("$_avatar", style: TextStyle(fontSize: 40)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          labelText: "Ce problemă ai?",
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: _loading
+                          ? null
+                          : () => getTasksFromFlask(_controller.text),
+                      child: Text("Generează"),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 16),
+                if (_loading)
+                  Center(child: CircularProgressIndicator()),
+                if (!_loading && _tasks.isNotEmpty)
+                  Expanded(
+                    child: ListView(
+                      children: _tasks.map(_buildTaskTile).toList(),
+                    ),
+                  ),
+                const Divider(),
+                Text("🏅 Badge-uri",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildBadge("Focus x5", Icons.star, _checked.length >= 5),
+                    _buildBadge("Challenge OK", Icons.check_circle,
+                        _dailyChallengeCompleted),
+                    _buildBadge("AI Hacker", Icons.bolt,
+                        _controller.text.isNotEmpty),
+                  ],
+                ),
+                const Divider(),
+                Text("📢 Activitate prieteni"),
+                ...socialFeed.reversed
+                    .take(3)
+                    .map((msg) => ListTile(title: Text(msg))),
+                const Divider(),
+                Text("🏆 Clasament"),
+                ...sortedFriends.map((user) => ListTile(
+                      leading:
+                          Text("#${sortedFriends.indexOf(user) + 1}"),
+                      title: Text(user['name']),
+                      trailing: Text("${user['xp']} XP"),
+                    )),
               ],
             ),
-            Divider(),
-            Text("📢 Activitate prieteni"),
-            ...socialFeed.reversed.take(3).map((msg) => ListTile(title: Text(msg))),
-            Divider(),
-            Text("🏆 Clasament"),
-            ...sortedFriends.map((user) => ListTile(
-                  leading: Text("#${sortedFriends.indexOf(user) + 1}"),
-                  title: Text(user['name']),
-                  trailing: Text("${user['xp']} XP"),
-                )),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

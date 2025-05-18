@@ -74,9 +74,16 @@ class ConcentricAnimationOnboarding extends StatelessWidget {
         itemCount: pages.length,
         scaleFactor: 2,
         onFinish: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => StartPage()),
-          );
+          Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (_) => StartPage(
+      isDarkMode: false, // sau true, în funcție de context
+      toggleTheme: () {}, // funcție goală sau reală, dacă ai
+    ),
+  ),
+);
+
         },
         itemBuilder: (index) {
           final page = pages[index % pages.length];

@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   shared_preferences: ^2.2.2
   concentric_transition: ^1.0.3
   camera: ^0.10.5+2
@@ -24,7 +25,6 @@ dependencies:
   # 🕒 Timezone pentru notificări programate
   timezone: ^0.10.1
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,4 +33,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-
+  assets:
+    - assets/bg_glow.png
+   
