@@ -7,10 +7,10 @@ import 'camera_screen.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<String>> fetchChallengeFromClaudeAPI() async {
-  final url = Uri.parse('http://192.168.1.100:5001/ask');
+  final url = Uri.parse('http://192.168.0.110:5001/ask');
 
   final response = await http.get(url);
-
+  print("A trimis Request!");
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
     final content = data['response'] as String;
@@ -79,7 +79,7 @@ class _DailyChallengeState extends State<DailyChallenge> {
 
   String _getTodayKey() {
     final now = DateTime.now();
-    return 'challenge_${now.year}-${now.month}-${now.day}';
+    return 'challenge_${now.year}-${now.month}-${now.day+3}';
   }
 
   Future<void> _initCamera() async {
