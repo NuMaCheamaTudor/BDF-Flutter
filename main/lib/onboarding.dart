@@ -6,6 +6,7 @@ import 'notification_service.dart';
 import 'theme/theme.dart';
 import 'package:concentric_transition/concentric_transition.dart';
 import 'package:main/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -35,20 +36,20 @@ class MyApp extends StatelessWidget {
 
 final pages = [
   const PageData(
-    icon: Icons.medication_outlined,
-    title: "Alege durata tratamentului",
+    icon: Icons.monitor_heart_outlined,
+    title: "Alege un stil diferit de viata",
     bgColor: Color(0xff3b1791),
     textColor: Colors.white,
   ),
   const PageData(
-    icon: Icons.access_time,
-    title: "Selectează ora și intervalul",
+    icon: Icons.control_camera_outlined,
+    title: "Preia din nou controlul",
     bgColor: Color(0xfffab800),
     textColor: Color(0xff3b1790),
   ),
   const PageData(
-    icon: Icons.notifications_active,
-    title: "Primește notificări zilnice 💊",
+    icon: Icons.group_add_outlined,
+    title: "Incearca cu prietenii tai",
     bgColor: Color(0xffffffff),
     textColor: Color(0xff3b1790),
   ),
@@ -73,7 +74,9 @@ class ConcentricAnimationOnboarding extends StatelessWidget {
         ),
         itemCount: pages.length,
         scaleFactor: 2,
-        onFinish: () {
+        onFinish: () async {
+           final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('seenOnboarding', true);
           Navigator.pushReplacement(
   context,
   MaterialPageRoute(

@@ -28,11 +28,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Reminder Pastile',
+      title: 'Nu uita de...',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: SplashScreenWrapper(toggleTheme: _toggleTheme, isDarkMode: _isDarkMode),
+      home: SplashScreen(),
     );
   }
 }
@@ -60,7 +60,7 @@ class StartPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.grey[900] : const Color(0xfff5f5f5),
       appBar: AppBar(
-        title: const Text('Your Dashboard'),
+        title: const Text('BDF'),
         elevation: 0,
         backgroundColor: Colors.deepPurple,
         actions: [
@@ -92,10 +92,10 @@ class StartPage extends StatelessWidget {
                 childAspectRatio: 1,
               ),
               children: [
-                _buildDashboardTile(context, Icons.timer_outlined, 'Set a timer', Colors.deepPurple, () => Navigator.push(context, _createRoute(ReminderPage()))),
-                _buildDashboardTile(context, Icons.auto_awesome, 'Change Your Life', Colors.orange, () => Navigator.push(context, _createRoute(ReminderPage()))),
-                _buildDashboardTile(context, Icons.flash_on, 'Daily Challenge', Colors.pinkAccent, () => Navigator.push(context, _createRoute(DailyChallenge()))),
-                _buildDashboardTile(context, Icons.group, 'Get Help', Colors.teal, () => Navigator.push(context, _createRoute(UltimateSocialHabitScreen()))),
+                _buildDashboardTile(context, Icons.timer_outlined, 'Nu uita de...', Colors.deepPurple, () => Navigator.push(context, _createRoute(ReminderPage()))),
+                _buildDashboardTile(context, Icons.auto_awesome, 'Schimba ceva', Colors.orange, () => Navigator.push(context, _createRoute(ReminderPage()))),
+                _buildDashboardTile(context, Icons.flash_on, 'Provocare zilnica', Colors.pinkAccent, () => Navigator.push(context, _createRoute(DailyChallenge()))),
+                _buildDashboardTile(context, Icons.group, 'Cere un sfat', Colors.teal, () => Navigator.push(context, _createRoute(UltimateSocialHabitScreen()))),
               ],
             ),
           )
