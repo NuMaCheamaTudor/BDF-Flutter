@@ -5,7 +5,7 @@ import 'dailychallenge.dart';
 import 'ultimate_social_habit_screen (1).dart';
 import 'notification_service.dart';
 import 'splash_screen.dart';
-
+import 'journal.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.init();
@@ -93,7 +93,7 @@ class StartPage extends StatelessWidget {
               ),
               children: [
                 _buildDashboardTile(context, Icons.timer_outlined, 'Nu uita de...', Colors.deepPurple, () => Navigator.push(context, _createRoute(ReminderPage()))),
-                _buildDashboardTile(context, Icons.auto_awesome, 'Schimba ceva', Colors.orange, () => Navigator.push(context, _createRoute(ReminderPage()))),
+                _buildDashboardTile(context, Icons.auto_awesome, 'Schimba ceva', Colors.orange, () => Navigator.push(context, _createRoute(LifeJournalPage()))),
                 _buildDashboardTile(context, Icons.flash_on, 'Provocare zilnica', Colors.pinkAccent, () => Navigator.push(context, _createRoute(DailyChallenge()))),
                 _buildDashboardTile(context, Icons.group, 'Cere un sfat', Colors.teal, () => Navigator.push(context, _createRoute(UltimateSocialHabitScreen()))),
               ],
